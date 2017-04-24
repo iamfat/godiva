@@ -1,11 +1,15 @@
 <template>
-  <div class="detail">
+  <div class="analysis">
     <mu-content-block>
       <mu-flat-button label="返回" icon="undo" @click="$router.push('/')" primary/>
+      <mu-raised-button label="保存" icon="save" primary/>
     </mu-content-block>
     <mu-divider />
     <mu-row>
-      <mu-col width="100" tablet="40" desktop="25">
+      <mu-col width="100" tablet="60" desktop="75" style="position:relative">
+        <div id="chart"></div>
+      </mu-col>
+      <mu-col width="100" tablet="40" desktop="25" class="sidebar">
         <mu-appbar title="基本信息">
         </mu-appbar>
         <mu-content-block>
@@ -58,7 +62,7 @@
           </template>
           <template v-if="analysis.renderMode=='chart'">
             <mu-checkbox label="显示图表名称" /><br/><br/>
-            <mu-subheader>图表类型</mu-subheader><br/>
+            <mu-sub-header>图表类型</mu-sub-header><br/>
             <mu-radio label="柱状图" name="chartType" nativeValue="bar" v-model="analysis.chartMode" />
             &#160;
             <mu-radio label="饼状图" name="chartType" nativeValue="pie" v-model="analysis.chartMode" />
@@ -66,12 +70,6 @@
         </mu-content-block>
         <br/>
         <mu-divider/>
-        <mu-content-block >
-          <mu-raised-button label="保存" icon="save" fullWidth primary />
-        </mu-content-block>
-      </mu-col>
-      <mu-col width="100" tablet="60" desktop="75">
-        <mu-paper style="min-height:300px;margin:20px" :zDepth="2" />
       </mu-col>
     </mu-row>
 
@@ -104,7 +102,7 @@
     </mu-dialog>
 
     <mu-dialog :open="dialogDimensionSettings" title="维度设置" @close="closeDialogDimensionSettings">
-      <mu-subheader>分组方式</mu-subheader><br/>
+      <mu-sub-header>分组方式</mu-sub-header><br/>
       <mu-content-block>
         <mu-select-field value="day">
            <mu-menu-item value="day" title="按日"/>
@@ -115,7 +113,7 @@
       </mu-content-block>
       <mu-divider/>
       <br/>
-      <mu-subheader>筛选条件</mu-subheader><br/>
+      <mu-sub-header>筛选条件</mu-sub-header><br/>
       <mu-content-block>
         <mu-date-picker hintText="检索时段" autoOk/>
         <mu-date-picker hintText="到" autoOk/> <br/>
@@ -155,6 +153,13 @@
 </template>
 
 <script>
+import echarts from 'echarts/lib/echarts'
+// 引入柱状图
+import 'echarts/lib/chart/bar'
+// 引入提示框和标题组件
+import 'echarts/lib/component/tooltip'
+import 'echarts/lib/component/title'
+
 export default {
   methods: {
     openDialogDimensionSettings () {
@@ -186,27 +191,34 @@ export default {
         source: '1'
       }
     }
+  },
+  mounted () {
+    var chart = echarts.init(document.getElementById('chart'))
+    chart.setOption({
+      title: { text: 'ECharts 入门示例' },
+      tooltip: {},
+      xAxis: {
+        data: ['衬衫', '羊毛衫', '雪纺衫', '裤子', '高跟鞋', '袜子']
+      },
+      yAxis: {},
+      series: [{
+        name: '销量',
+        type: 'bar',
+        data: [5, 20, 36, 10, 10, 20]
+      }]
+    })
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h1, h2 {
-  font-weight: normal;
+.sidebar {
+  border-left: 1px solid #ccc;
 }
 
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-
-a {
-  color: #42b983;
+#chart {
+  width:100%;
+  min-height: 480px;
 }
 </style>

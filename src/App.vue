@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <mu-appbar :title="title">
-      <mu-icon-button icon='menu' slot="left"/>
+      <mu-icon-button icon='home' slot="left" />
     </mu-appbar>
     <router-view></router-view>
   </div>
