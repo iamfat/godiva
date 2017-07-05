@@ -1,12 +1,12 @@
 const Base = require('./driver')
 
-module.exports = class View extends Base {
-  fetch () {
+module.exports = class User extends Base {
+  get () {
     return this.remote({
-      baseURL: 'https://api.bitbucket.org/2.0/teams/genee-yiqikong/members',
+      baseURL: 'http://localhost:8180/',
       headers: { 'X-Requested-With': 'XMLHttpRequest' }
     })
-    .get('')
+    .get('auth')
     .then(res => {
       return Promise.resolve(res.data)
     })

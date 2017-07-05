@@ -11,7 +11,6 @@ module.exports = {
     return this.passenger
   },
   fetch ({ resource = '', params = {} }) {
-    console.log('??')
     return this.passenger
     .get(resource, { params })
     .then(r => Promise.resolve(r.data))

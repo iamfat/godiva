@@ -2,6 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const LRU = require('lru-cache')
 const express = require('express')
+const cookieParser = require('cookie-parser')
 const favicon = require('serve-favicon')
 const compression = require('compression')
 const resolve = file => path.resolve(__dirname, file)
@@ -58,12 +59,34 @@ const serve = (path, cache) => express.static(resolve(path), {
   maxAge: cache && isProd ? 60 * 60 * 24 * 30 : 0
 })
 
+// 开启sessions
+const redisConf = require('./lib/config/redis')
+const expressSession = require('express-session')
+const redisStore = require('connect-redis')(expressSession);
+const store = new redisStore(redisConf)
+const session = expressSession({
+  name: 'godiva.sid',
+  store: Object.create(store),
+  secret: 'godiva',
+  resave: true,
+  saveUninitialized: true
+})
+app.use(session)
+
+app.use(cookieParser())
 app.use(compression({ threshold: 0 }))
 app.use(favicon('./public/favicon.png'))
 app.use('/dist', serve('./dist', true))
 app.use('/public', serve('./public', true))
 app.use('/manifest.json', serve('./manifest.json', true))
 app.use('/service-worker.js', serve('./dist/service-worker.js'))
+
+app.use('/', require('./routes/auth'))
+// 定义 errorHandler 进行错误处理
+app.use((err, req, res, next) => {
+  console.log(err)
+  res.status(err.message[0]).send({error: err.message[1]})
+})
 
 // 1-second microcache.
 // https://www.nginx.com/blog/benefits-of-microcaching-nginx/
@@ -108,7 +131,11 @@ function render (req, res) {
 
   const context = {
     title: 'Gini-Vue-template', // default title
-    url: req.url
+    url: req.url,
+    // 利用服务端渲染的特性将user传递到客户端
+    state: {
+      user: req.session.user
+    }
   }
   renderer.renderToString(context, (err, html) => {
     if (err) {
@@ -128,7 +155,7 @@ app.get('*', isProd ? render : (req, res) => {
   readyPromise.then(() => render(req, res))
 })
 
-const port = process.env.PORT || 8180
+const port = process.env.PORT || 8181
 app.listen(port, () => {
   console.log(`server started at localhost:${port}`)
 })

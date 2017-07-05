@@ -1,35 +1,33 @@
+import Vue from 'vue'
 import Api from '../api'
-
 let api = new Api('user')
 
 // initial state
 const state = {
-  users: {}
+  user: {}
 }
 
 // getters
-const getters = {
-  filterUser (state) {
-
-  }
-}
+const getters = {}
 
 // actions
 const actions = {
-  fetchUser ({ commit, state }) {
-    return Object.keys(state.users).length > 0
-    ? Promise.resolve(state.users)
-    : api.call('fetch', {}, {
-      commit,
-      type: 'setUser'
+  getUser ({ commit, state }) {
+    return Object.keys(state.user).length > 0
+    ? Promise.resolve(state.user)
+    : api.invoke('get').then(user => {
+      commit({
+        type: 'setUser',
+        user
+      })
     })
   }
 }
 
 // mutations
 const mutations = {
-  setUser (state, { result }) {
-    state.users = result.values
+  setUser (state, { user }) {
+    Vue.set(state, 'user', user)
   }
 }
 

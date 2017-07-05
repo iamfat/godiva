@@ -14,6 +14,8 @@ export default context => {
 
     // set router's location
     router.push(context.url)
+    // 因为后面 context 会被 store盖掉 这边需要塞回去
+    store.state.user = context.state.user
 
     // wait until router has resolved possible async hooks
     router.onReady(() => {

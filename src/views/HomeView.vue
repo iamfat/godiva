@@ -2,7 +2,6 @@
 div
   h1 Gini-Vue-Template
   div.container
-    user(v-for="user in users", v-bind:url="user.links.avatar.href", v-bind:name="user.display_name" v-bind:key="user.id")
 </template>
 
 <script>
@@ -15,14 +14,6 @@ export default {
     return {
       loading: true
     }
-  },
-  computed: {
-    users () {
-      return this.$store.state.user.users
-    }
-  },
-  asyncData ({ store }) {
-    return store.dispatch('fetchUser')
   }
 }
 </script>
