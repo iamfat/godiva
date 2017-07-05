@@ -1,39 +1,78 @@
-<template lang="pug">
-div
-  h1 Gini-Vue-Template
-  div.container
-    user(v-for="user in users", v-bind:url="user.links.avatar.href", v-bind:name="user.display_name" v-bind:key="user.id")
+<template>
+  <div class="container">
+    <div class="search-container">
+      <el-row>
+        <el-col :span="12">
+          <span class="logo-container">Godiva</span>
+        </el-col>
+        <el-col :span="12" class="opt-container">
+          <router-link class="add-container" to="/add"><el-button type="primary">新建</el-button></router-link>
+          <el-input
+            class="form-input"
+            placeholder="search"
+            icon="search"
+            v-model="search_val"
+            :on-icon-click="searchHandler">
+          </el-input>
+        </el-col>
+      </el-row>
+    </div>
+    <hr class="hr" />
+    <div class="folder-container">
+    </div>
+  </div>
 </template>
 
 <script>
-import User from 'components/User.vue'
+import { Row, Col, Button, Input } from 'element-ui'
 
 export default {
-  name: 'home-view',
-  components: { User },
+  components: {
+    [Row.name]: Row,
+    [Col.name]: Col,
+    [Button.name]: Button,
+    [Input.name]: Input
+  },
   data () {
-    return {
-      loading: true
-    }
+    return {}
   },
-  computed: {
-    users () {
-      return this.$store.state.user.users
+  methods: {
+    searchHandler () {
     }
-  },
-  asyncData ({ store }) {
-    return store.dispatch('fetchUser')
   }
 }
 </script>
 
-<style lang="stylus" scoped>
-.container
-  text-align center
-h1
-  font-family fantasy
-  margin 40px auto
-  text-align center
-  font-size 60px
-  color #369d8b
+<style>
+.container {
+  margin: 10px auto;
+}
+.search-container {
+  height: 50px;
+  line-height: 50px;
+}
+.logo-container {
+  display: inline-block;
+  margin-left: 60px;
+  font-size: 30px;
+  font-family: monospace;
+}
+.opt-container {
+  text-align: right;
+}
+.add-container {
+  display: inline-block;
+  margin-right: 40px;
+}
+.form-input {
+  display: inline-block;
+  margin-right: 60px;
+  width: 200px;
+}
+.hr {
+  color: #324157;
+}
+.folder-container {
+  margin: 20px 40px;
+}
 </style>
