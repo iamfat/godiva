@@ -1,3 +1,4 @@
+const gateway = require('../lib/config/gateway')
 const Client = require('../src/model/driver')
 const assert = require('assert') // 利用断言作数据判断 不过不知道是否有效
 const querystring = require('querystring')
@@ -14,7 +15,7 @@ router.get('*', (req, res, next) => {
       let id = sessionId.split(':')[1].split('.')[0]
       client = new Client()
       client
-      .remote({ baseURL: 'http://localhost:8180' })
+      .remote({ baseURL: gateway.dashboard.server_home })
       .get(`auth/${id}`)
       .then(res => {
         req.session.user = res.data
@@ -23,7 +24,7 @@ router.get('*', (req, res, next) => {
     next()
   }
   else {
-    res.redirect(301, `http://localhost:8180/`)
+    res.redirect(301, gateway.dashboard.server_home)
   }
 })
 
