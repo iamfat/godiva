@@ -6,14 +6,14 @@ const Access = r => require.ensure([], () => r(require('views/error/401.vue')), 
 
 Vue.use(Router)
 
-export function createRouter () {
+export function createRouter (store) {
   return new Router({
     mode: 'history',
     scrollBehavior: () => ({ y: 0 }),
     routes: [
       { name: '401', path: '/401', component: Access },
       { path: '/', redirect: '/home' },
-      home
+      home(store)
     ]
   })
 }

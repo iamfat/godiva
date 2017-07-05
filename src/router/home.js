@@ -14,3 +14,5 @@ let router = (store) => {
     }
   }
 }
+
+export default router
